@@ -16,7 +16,7 @@ setup(
   long_description_content_type='text/markdown',
   url='your_url',
   packages=find_packages(),
-  install_requires=['tensorflow'],
+  install_requires=['tensorflow','numpy'],
   classifiers=[
     'Programming Language :: Python :: 3.11',
     'License :: OSI Approved :: MIT License',
