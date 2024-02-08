@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-class LSTMTransformerLayer(Layer):
+class LSTMTransformerLayer(tf.keras.layers.Layer):
   def __init__(self, height, dropout=0):
     super().__init__()
     self.LSTMb=tf.keras.layers.LSTM(units=height, return_sequences=True, 
