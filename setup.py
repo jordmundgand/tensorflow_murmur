@@ -14,7 +14,7 @@ setup(
   description='This is small addons module for tensorflow',
   long_description=readme(),
   long_description_content_type='text/markdown',
-  url='your_url',
+  url='https://pypi.org/project/tensorflow-murmur/',
   packages=find_packages(),
   install_requires=['tensorflow','numpy'],
   classifiers=[
@@ -24,7 +24,7 @@ setup(
   ],
   keywords='tf addons',
   project_urls={
-    'GitHub': 'your_github'
+    'GitHub': 'https://github.com/jordmundgand/tensorflow_murmur'
   },
   python_requires='>=3.6'
 )
