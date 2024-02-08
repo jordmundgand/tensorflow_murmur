@@ -1,6 +1,5 @@
 from tf.keras.layers inport Layer,LSTM,LayerNormalization,Add
 
-
 class LSTMTransformerLayer(Layer):
   def __init__(self, height, dropout=0):
     super().__init__()
