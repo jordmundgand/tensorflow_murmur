@@ -2,6 +2,11 @@ import tensorflow as tf
 import numpy as np
 
 class LSTMTransformerLayer(tf.keras.layers.Layer):
+  '''Transformers encoder-like layer, similar to EncoderLayer, but based on residual bidirectional LSTM
+  instead of MultiHeadAttention and FeedForward. Doesnt require positional encoding.
+     Parameters:
+     height: int, embedding dimension;
+     dropout: 0<float<1 LSTM dropout between layers'''
   def __init__(self, height, dropout=0):
     super().__init__()
     self.LSTMb=tf.keras.layers.LSTM(units=height, return_sequences=True, 
@@ -33,11 +38,16 @@ def positional_encoding(length, depth):
   return tf.cast(pos_encoding, dtype=tf.float32)
 
 class PositionalEmbedding(tf.keras.layers.Layer):
-  def __init__(self, vocab_size, d_model):
+  '''Classical transformers positional embedding layer. 
+     Parameters:
+     vocab_size: int, vocabulary dimension;
+     d_model: int, embedding dimension;
+     length: int, length of the encoding sequence'''
+  def __init__(self, vocab_size, d_model, length=2048):
     super().__init__()
     self.d_model = d_model
     self.embedding = tf.keras.layers.Embedding(vocab_size, d_model, mask_zero=True) 
-    self.pos_encoding = positional_encoding(length=2048, depth=d_model)
+    self.pos_encoding = positional_encoding(length=length, depth=d_model)
 
   def compute_mask(self, *args, **kwargs):
     return self.embedding.compute_mask(*args, **kwargs)
@@ -111,6 +121,12 @@ class FeedForward(tf.keras.layers.Layer):
     return x
 
 class EncoderLayer(tf.keras.layers.Layer):
+  '''Classical transformers encoder layer,  based on MultiHeadAttention and FeedForward. 
+     Parameters:
+     d_model: int, embedding dimension;
+     num_heads: int, number of attention heads;
+     dff: int, FeedFoeward inner dimension;
+     dropout: 0<float<1 inner dropout'''
   def __init__(self,*, d_model, num_heads, dff, dropout_rate=0.1):
     super().__init__()
 
@@ -127,6 +143,12 @@ class EncoderLayer(tf.keras.layers.Layer):
     return x
 
 class DecoderLayer(tf.keras.layers.Layer):
+  '''Classical transformers decoder layer,  based on MultiHeadAttention and FeedForward. 
+     Parameters:
+     d_model: int, embedding dimension;
+     num_heads: int, number of attention heads;
+     dff: int, FeedFoeward inner dimension;
+     dropout: 0<float<1 inner dropout'''
   def __init__(self,
                *,
                d_model,
