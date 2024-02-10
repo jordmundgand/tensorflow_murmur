@@ -1,4 +1,4 @@
-
+import tensorflow as tf
 
 def masked_loss(label, pred):
   mask = label != 0
