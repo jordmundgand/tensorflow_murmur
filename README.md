@@ -5,7 +5,10 @@
 Small TF addons library
 
 # Layers
+  LSTMTransformerLayer, PositionalEmbedding, EncoderLayer, DecoderLayer
 
 # Losses
+  masked_loss
 
 # Metrics
+  masked_accuracy
