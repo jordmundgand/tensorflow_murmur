@@ -178,3 +178,10 @@ class DecoderLayer(tf.keras.layers.Layer):
 
     x = self.ffn(x)  # Shape `(batch_size, seq_len, d_model)`.
     return x
+
+def random_masked_indexing(x):
+    x=tf.reduce_sum(x,axis=-1,keepdims=True)
+    return tf.vectorized_map(lambda y: tf.random.uniform([1], minval=0, maxval=y[0], dtype=tf.int32), x)
+  
+def language_masking(x, masked_value=2):
+    return tf.vectorized_map(lambda z: tf.tensor_scatter_nd_update(z[0], z[1][tf.newaxis,:], [masked_value]), x)
