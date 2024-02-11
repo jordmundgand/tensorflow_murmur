@@ -201,6 +201,15 @@ class LanguageMasking(tf.keras.layers.Layer):
         masked=self.lambda0(inputs)
         return tf.keras.backend.in_train_phase(masked, inputs[0], training=training)
 
+class IndexedSlice(tf.keras.layers.Layer):
+    def __init__(self):
+        super().__init__()
+        def indexed_slice(x):
+            return tf.vectorized_map(lambda z: tf.gather(z[0], z[1]), x)
+        self.lambda0=tf.keras.layers.Lambda(indexed_slice)
+    def call(self, inputs):
+        return self.lambda0(inputs)
+
 def random_masked_indexing(x):
     x=tf.reduce_sum(x,axis=-1,keepdims=True)
     return tf.vectorized_map(lambda y: tf.random.uniform([1], minval=0, maxval=y[0], dtype=tf.int32), x)
