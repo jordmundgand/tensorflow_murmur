@@ -39,8 +39,8 @@ class IndexedSlice(tf.keras.layers.Layer):
     return self.lambda0(inputs)
 
 class Splitter(tf.keras.layers.Layer):
-  '''Preprocessing layer, splits input by sep to length,
-  returns string tensor.'''
+    '''Preprocessing layer, splits input by sep to length,
+    returns string tensor.'''
     def __init__(self,length=48,sep=' '):
         super().__init__()
         def multisplitter(x, length=length, sep=sep):
