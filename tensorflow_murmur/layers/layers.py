@@ -2,11 +2,13 @@ import tensorflow as tf
 import numpy as np
 
 class LSTMTransformerLayer(tf.keras.layers.Layer):
-  '''Transformers encoder-like layer, similar to EncoderLayer, but based on residual bidirectional LSTM
-  instead of MultiHeadAttention and FeedForward. Doesn`t require positional encoding.
-     Parameters:
-     height: int, embedding dimension;
-     dropout: 0<float<1 LSTM dropout between layers'''
+  '''Transformers encoder-like layer, similar to EncoderLayer, 
+  but based on residual bidirectional LSTM
+  instead of MultiHeadAttention and FeedForward. 
+  Doesn`t require positional encoding.
+  Parameters:
+  height: int, embedding dimension;
+  dropout: 0<float<1 LSTM dropout between layers'''
   def __init__(self, height, dropout=0):
     super().__init__()
     self.LSTMb=tf.keras.layers.LSTM(units=height, return_sequences=True, 
@@ -121,14 +123,15 @@ class FeedForward(tf.keras.layers.Layer):
     return x
 
 class EncoderLayer(tf.keras.layers.Layer):
-  '''Classical transformers encoder layer,  based on MultiHeadAttention and FeedForward. 
-     Parameters:
-     d_model: int, embedding dimension;
-     num_heads: int, number of attention heads;
-     dff: int, FeedFoeward inner dimension;
-     activation: str or function, inner FeedForward layer activation;
-     attention_dropout: 0<float<1 inner MultiHeadAttention layer dropout
-     ffn_dropout: 0<float<1 inner inner FeedForward layer dropout'''
+  '''Classical transformers encoder layer,  based on MultiHeadAttention 
+  and FeedForward. 
+  Parameters:
+  d_model: int, embedding dimension;
+  num_heads: int, number of attention heads;
+  dff: int, FeedFoeward inner dimension;
+  activation: str or function, inner FeedForward layer activation;
+  attention_dropout: 0<float<1 inner MultiHeadAttention layer dropout
+  ffn_dropout: 0<float<1 inner inner FeedForward layer dropout'''
   def __init__(self,*, d_model, num_heads, dff, activation='gelu', attention_dropout=0.0, ffn_dropout=0.0):
     super().__init__()
 
@@ -145,14 +148,15 @@ class EncoderLayer(tf.keras.layers.Layer):
     return x
 
 class DecoderLayer(tf.keras.layers.Layer):
-  '''Classical transformers decoder layer,  based on MultiHeadAttention and FeedForward. 
-     Parameters:
-     d_model: int, embedding dimension;
-     num_heads: int, number of attention heads;
-     dff: int, FeedFoeward inner dimension;
-     activation: str or function, inner FeedForward layer activation;
-     attention_dropout: 0<float<1 inner MultiHeadAttention layer dropout
-     ffn_dropout: 0<float<1 inner inner FeedForward layer dropout'''
+  '''Classical transformers decoder layer,  based on MultiHeadAttention 
+  and FeedForward. 
+  Parameters:
+  d_model: int, embedding dimension;
+  num_heads: int, number of attention heads;
+  dff: int, FeedFoeward inner dimension;
+  activation: str or function, inner FeedForward layer activation;
+  attention_dropout: 0<float<1 inner MultiHeadAttention layer dropout
+  ffn_dropout: 0<float<1 inner inner FeedForward layer dropout'''
   def __init__(self,
                *,
                d_model, num_heads, dff, activation='gelu', attention_dropout=0.0, ffn_dropout=0.0):
