@@ -37,3 +37,17 @@ class IndexedSlice(tf.keras.layers.Layer):
     self.lambda0=tf.keras.layers.Lambda(indexed_slice)
   def call(self, inputs):
     return self.lambda0(inputs)
+
+class Splitter(tf.keras.layers.Layer):
+    def __init__(self,length=48):
+        super().__init__()
+        def multisplitter(x, length=length):
+            out=tf.strings.split(x,sep=' ').to_tensor()
+            pad=tf.cast(['']*length,dtype='string')
+            out=tf.vectorized_map(lambda y: tf.concat((tf.squeeze(y),pad),axis=-1)[:length],out)
+            return out
+        self.length=length
+        self.lambda0=tf.keras.layers.Lambda(multisplitter)
+        self.reshape=tf.keras.layers.Reshape([self.length])
+    def call(self, inputs):
+        return self.reshape(self.lambda0(inputs))
