@@ -58,7 +58,7 @@ class MultiText(tf.keras.layers.Layer):
     '''Preprocessing layer, convert string tensor into 2D count tensor according to vocabulary.
     Parameters:
     vocabulary: list of tokens;
-    length int, layer length;
+    length: int, layer length;
     max_tokens: max number of tokens;
     standardize: string or callable, like in TextVectorization;
     split: string or callable, like in TextVectorization;
