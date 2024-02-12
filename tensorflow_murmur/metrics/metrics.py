@@ -15,4 +15,5 @@ def masked_accuracy(label, pred):
   return tf.reduce_sum(match)/tf.reduce_sum(mask)
 
 def batch_average(label, pred):
+  '''Special `accuracy` function, useful for MLM.'''
   return tf.reduce_mean(pred)
