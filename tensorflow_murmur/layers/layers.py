@@ -161,7 +161,7 @@ class DecoderLayer(tf.keras.layers.Layer):
     self.causal_self_attention = CausalSelfAttention(
         num_heads=num_heads,
         key_dim=d_model,
-        dropout=attention_dropout
+        dropout=attention_dropout)
     
     self.cross_attention = CrossAttention(
         num_heads=num_heads,
