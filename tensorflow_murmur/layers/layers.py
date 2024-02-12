@@ -3,7 +3,7 @@ import numpy as np
 
 class LSTMTransformerLayer(tf.keras.layers.Layer):
   '''Transformers encoder-like layer, similar to EncoderLayer, but based on residual bidirectional LSTM
-  instead of MultiHeadAttention and FeedForward. Doesnt require positional encoding.
+  instead of MultiHeadAttention and FeedForward. Doesn`t require positional encoding.
      Parameters:
      height: int, embedding dimension;
      dropout: 0<float<1 LSTM dropout between layers'''
