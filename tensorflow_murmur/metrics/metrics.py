@@ -1,7 +1,8 @@
 import tensorflow as tf
 
 def masked_accuracy(label, pred):
-  '''Classical transformers masked SparseCategoricalAccuracy metric function.'''
+  '''Classical transformers masked SparseCategoricalAccuracy 
+  metric function.'''
   pred = tf.argmax(pred, axis=2)
   label = tf.cast(label, pred.dtype)
   match = label == pred
