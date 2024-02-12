@@ -2,8 +2,8 @@ import tensorflow as tf
 
 class RandomIndexing(tf.keras.layers.Layer):
   '''Preprocessing layer, returns single random index 
-     among 1D sequence part,
-     which is not == mask_value, useful for MLM'''
+  among 1D sequence part,
+  which is not == mask_value, useful for MLM'''
   def __init__(self, mask_value=0):
     super().__init__()
     def random_masked_indexing(x, mask_value=mask_value):
@@ -17,7 +17,7 @@ class RandomIndexing(tf.keras.layers.Layer):
 
 class LanguageMasking(tf.keras.layers.Layer):
   '''Preprocessing layer, replace single value in inputs[0] 
-     to mask by index from inputs[1], useful for MLM'''
+  to mask by index from inputs[1], useful for MLM'''
   def __init__(self, mask):
     super().__init__()
     def language_masking(x, masked_value=mask):
@@ -39,6 +39,8 @@ class IndexedSlice(tf.keras.layers.Layer):
     return self.lambda0(inputs)
 
 class Splitter(tf.keras.layers.Layer):
+  '''Preprocessing layer, splits input by sep to length,
+  returns string tensor.'''
     def __init__(self,length=48,sep=' '):
         super().__init__()
         def multisplitter(x, length=length, sep=sep):
@@ -53,6 +55,16 @@ class Splitter(tf.keras.layers.Layer):
         return self.reshape(self.lambda0(inputs))
 
 class MultiText(tf.keras.layers.Layer):
+    '''Preprocessing layer, convert string tensor into 2D count tensor according to vocabulary.
+    Parameters:
+    vocabulary: list of tokens;
+    length int, layer length;
+    max_tokens: max number of tokens;
+    standardize: string or callable, like in TextVectorization;
+    split: string or callable, like in TextVectorization;
+    ngrams: like in TextVectorization;
+    output_mode: string, like in TextVectorization;;
+    pad_to_max_tokens: boolean, like in TextVectorization.'''
     def __init__(self, vocabulary, length, max_tokens=None, standardize='lower_and_strip_punctuation', split='whitespace',
                  ngrams=None, output_mode='count', pad_to_max_tokens=False):
         super().__init__()
