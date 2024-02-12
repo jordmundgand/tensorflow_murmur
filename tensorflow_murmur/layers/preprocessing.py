@@ -10,7 +10,7 @@ class RandomIndexing(tf.keras.layers.Layer):
         x=tf.cast(x,dtype=tf.int32)
         x=tf.reduce_sum(x,axis=-1,keepdims=True)
         return tf.vectorized_map(lambda y: tf.random.uniform([1], minval=0, maxval=y[0], dtype=tf.int32), x)
-      self.lambda0=tf.keras.layers.Lambda(random_masked_indexing)
+    self.lambda0=tf.keras.layers.Lambda(random_masked_indexing)
   def call(self, inputs):     
     return self.lambda0(inputs)
 
