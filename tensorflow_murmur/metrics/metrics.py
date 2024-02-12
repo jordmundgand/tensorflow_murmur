@@ -15,6 +15,23 @@ def masked_accuracy(label, pred):
   mask = tf.cast(mask, dtype=tf.float32)
   return tf.reduce_sum(match)/tf.reduce_sum(mask)
 
+def masked_multi_cosine_similarity(label, pred):
+    '''Classical transformers masked SparseCategoricalCrossentropy 
+    loss function.'''
+    label=tf.sparse.to_dense(label)
+    mask = label == 0.
+    mask = ~tf.math.reduce_all(mask,axis=-1)
+    
+    label = tf.linalg.l2_normalize(label, axis=-1)
+    pred = tf.linalg.l2_normalize(pred, axis=-1)
+    metric = tf.reduce_sum(label*pred, axis=-1)
+
+    mask = tf.cast(mask, dtype=metric.dtype)
+    metric *= mask
+
+    metric = tf.reduce_sum(metric)/tf.reduce_sum(mask)
+    return metric
+
 def batch_average(label, pred):
   '''Special `accuracy` function, useful for MLM.'''
   return tf.reduce_mean(pred)
