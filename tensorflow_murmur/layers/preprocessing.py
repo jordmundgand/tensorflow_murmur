@@ -53,6 +53,8 @@ class Splitter(tf.keras.layers.Layer):
         self.reshape=tf.keras.layers.Reshape([self.length])
     def call(self, inputs):
         return self.reshape(self.lambda0(inputs))
+    def compute_mask(self, inputs, mask=None):
+        return tf.not_equal(inputs, '')
 
 class MultiText(tf.keras.layers.Layer):
     '''Preprocessing layer, convert string tensor into 2D count tensor according to vocabulary.
@@ -79,3 +81,5 @@ class MultiText(tf.keras.layers.Layer):
         out=[self.tv(x[:,i][:,tf.newaxis])[:,tf.newaxis,:] for i in range(self.length)]
         out=self.concatenate(out)
         return self.normalize(out)
+    def compute_mask(self, inputs, mask=None):
+        return mask
