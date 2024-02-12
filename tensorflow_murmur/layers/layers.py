@@ -128,7 +128,7 @@ class EncoderLayer(tf.keras.layers.Layer):
   Parameters:
   d_model: int, embedding dimension;
   num_heads: int, number of attention heads;
-  dff: int, FeedFoeward inner dimension;
+  dff: int, FeedForward inner dimension;
   activation: str or function, inner FeedForward layer activation;
   attention_dropout: 0<float<1 inner MultiHeadAttention layer dropout
   ffn_dropout: 0<float<1 inner inner FeedForward layer dropout'''
@@ -153,7 +153,7 @@ class DecoderLayer(tf.keras.layers.Layer):
   Parameters:
   d_model: int, embedding dimension;
   num_heads: int, number of attention heads;
-  dff: int, FeedFoeward inner dimension;
+  dff: int, FeedForward inner dimension;
   activation: str or function, inner FeedForward layer activation;
   attention_dropout: 0<float<1 inner MultiHeadAttention layer dropout
   ffn_dropout: 0<float<1 inner inner FeedForward layer dropout'''
