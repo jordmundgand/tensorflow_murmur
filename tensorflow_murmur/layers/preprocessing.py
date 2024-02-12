@@ -51,3 +51,19 @@ class Splitter(tf.keras.layers.Layer):
         self.reshape=tf.keras.layers.Reshape([self.length])
     def call(self, inputs):
         return self.reshape(self.lambda0(inputs))
+
+class MultiText(tf.keras.layers.Layer):
+    def __init__(self, vocabulary, length, max_tokens=None, standardize='lower_and_strip_punctuation', split='whitespace',
+                 ngrams=None, output_mode='count', pad_to_max_tokens=False):
+        super().__init__()
+        self.tv=tf.keras.layers.TextVectorization(max_tokens=max_tokens, standardize=standardize, 
+        split=split, ngrams=ngrams, output_mode=output_mode, pad_to_max_tokens=pad_to_max_tokens, 
+        vocabulary=vocabulary)
+        self.concatenate=tf.keras.layers.Concatenate(axis=1)
+        self.normalize=tf.keras.layers.Lambda(tf.nn.l2_normalize, arguments={'axis':-1})
+        self.length=length
+
+    def call(self, x):
+        out=[self.tv(x[:,i][:,tf.newaxis])[:,tf.newaxis,:] for i in range(self.length)]
+        out=self.concatenate(out)
+        return self.normalize(out)
