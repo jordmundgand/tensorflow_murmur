@@ -105,10 +105,10 @@ class CausalSelfAttention(BaseAttention):
     return x
 
 class FeedForward(tf.keras.layers.Layer):
-  def __init__(self, d_model, dff, dropout_rate=0.1):
+  def __init__(self, d_model, dff, activation='gelu', dropout_rate=0.0):
     super().__init__()
     self.seq = tf.keras.Sequential([
-      tf.keras.layers.Dense(dff, activation='relu'),
+      tf.keras.layers.Dense(dff, activation=activation),
       tf.keras.layers.Dense(d_model),
       tf.keras.layers.Dropout(dropout_rate)
     ])
@@ -126,16 +126,18 @@ class EncoderLayer(tf.keras.layers.Layer):
      d_model: int, embedding dimension;
      num_heads: int, number of attention heads;
      dff: int, FeedFoeward inner dimension;
-     dropout: 0<float<1 inner dropout'''
-  def __init__(self,*, d_model, num_heads, dff, dropout_rate=0.1):
+     activation: str or function, inner FeedForward layer activation;
+     attention_dropout: 0<float<1 inner MultiHeadAttention layer dropout
+     ffn_dropout: 0<float<1 inner inner FeedForward layer dropout'''
+  def __init__(self,*, d_model, num_heads, dff, activation='gelu', attention_dropout=0.0, ffn_dropout=0.0):
     super().__init__()
 
     self.self_attention = GlobalSelfAttention(
         num_heads=num_heads,
         key_dim=d_model,
-        dropout=dropout_rate)
+        dropout=attention_dropout)
 
-    self.ffn = FeedForward(d_model, dff)
+    self.ffn = FeedForward(d_model, dff, activation=activation, dropout=ffn_dropout)
 
   def call(self, x):
     x = self.self_attention(x)
@@ -148,26 +150,25 @@ class DecoderLayer(tf.keras.layers.Layer):
      d_model: int, embedding dimension;
      num_heads: int, number of attention heads;
      dff: int, FeedFoeward inner dimension;
-     dropout: 0<float<1 inner dropout'''
+     activation: str or function, inner FeedForward layer activation;
+     attention_dropout: 0<float<1 inner MultiHeadAttention layer dropout
+     ffn_dropout: 0<float<1 inner inner FeedForward layer dropout'''
   def __init__(self,
                *,
-               d_model,
-               num_heads,
-               dff,
-               dropout_rate=0.1):
+               d_model, num_heads, dff, activation='gelu', attention_dropout=0.0, ffn_dropout=0.0):
     super(DecoderLayer, self).__init__()
 
     self.causal_self_attention = CausalSelfAttention(
         num_heads=num_heads,
         key_dim=d_model,
-        dropout=dropout_rate)
+        dropout=attention_dropout
     
     self.cross_attention = CrossAttention(
         num_heads=num_heads,
         key_dim=d_model,
-        dropout=dropout_rate)
+        dropout=attention_dropout)
 
-    self.ffn = FeedForward(d_model, dff)
+    self.ffn = FeedForward(d_model, dff, activation=activation, dropout=ffn_dropout)
 
   def call(self, x, context):
     x = self.causal_self_attention(x=x)
@@ -180,6 +181,8 @@ class DecoderLayer(tf.keras.layers.Layer):
     return x
 
 class RandomIndexing(tf.keras.layers.Layer):
+  '''Preprocessing layer, returns single random index among 1D sequence part,
+     which is not == mask_value, useful for MLM'''
     def __init__(self, mask_value=0):
         super().__init__()
         def random_masked_indexing(x, mask_value=mask_value):
@@ -192,6 +195,7 @@ class RandomIndexing(tf.keras.layers.Layer):
         return self.lambda0(inputs)
 
 class LanguageMasking(tf.keras.layers.Layer):
+  '''Preprocessing layer, replace single value in inputs[0] to mask by index from inputs[1], useful for MLM'''
     def __init__(self, mask):
         super().__init__()
         def language_masking(x, masked_value=mask):
@@ -202,6 +206,7 @@ class LanguageMasking(tf.keras.layers.Layer):
         return tf.keras.backend.in_train_phase(masked, inputs[0], training=training)
 
 class IndexedSlice(tf.keras.layers.Layer):
+  '''Preprocessing layer, returns single value from inputs[0] by index from inputs[1], useful for MLM'''
     def __init__(self):
         super().__init__()
         def indexed_slice(x):
