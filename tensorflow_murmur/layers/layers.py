@@ -140,7 +140,7 @@ class EncoderLayer(tf.keras.layers.Layer):
         key_dim=d_model,
         dropout=attention_dropout)
 
-    self.ffn = FeedForward(d_model, dff, activation=activation, dropout=ffn_dropout)
+    self.ffn = FeedForward(d_model, dff, activation=activation, dropout_rate=ffn_dropout)
 
   def call(self, x):
     x = self.self_attention(x)
@@ -170,7 +170,7 @@ class DecoderLayer(tf.keras.layers.Layer):
     self.cross_attention = CrossAttention(
         num_heads=num_heads,
         key_dim=d_model,
-        dropout=attention_dropout)
+        dropout_rate=attention_dropout)
 
     self.ffn = FeedForward(d_model, dff, activation=activation, dropout=ffn_dropout)
 
