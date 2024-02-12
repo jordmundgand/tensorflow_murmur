@@ -39,10 +39,10 @@ class IndexedSlice(tf.keras.layers.Layer):
     return self.lambda0(inputs)
 
 class Splitter(tf.keras.layers.Layer):
-    def __init__(self,length=48):
+    def __init__(self,length=48,sep=' '):
         super().__init__()
-        def multisplitter(x, length=length):
-            out=tf.strings.split(x,sep=' ').to_tensor()
+        def multisplitter(x, length=length, sep=sep):
+            out=tf.strings.split(x,sep=sep).to_tensor()
             pad=tf.cast(['']*length,dtype='string')
             out=tf.vectorized_map(lambda y: tf.concat((tf.squeeze(y),pad),axis=-1)[:length],out)
             return out
