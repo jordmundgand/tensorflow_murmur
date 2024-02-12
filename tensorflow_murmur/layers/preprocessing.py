@@ -1,6 +1,8 @@
 import tensorflow as tf
 
 class RandomIndexing(tf.keras.layers.Layer):
+  '''Preprocessing layer, returns single random index among 1D sequence part,
+     which is not == mask_value, useful for MLM'''
     def __init__(self, mask_value=0):
         super().__init__()
         def random_masked_indexing(x, mask_value=mask_value):
@@ -13,6 +15,7 @@ class RandomIndexing(tf.keras.layers.Layer):
         return self.lambda0(inputs)
 
 class LanguageMasking(tf.keras.layers.Layer):
+  '''Preprocessing layer, replace single value in inputs[0] to mask by index from inputs[1], useful for MLM'''
     def __init__(self, mask):
         super().__init__()
         def language_masking(x, masked_value=mask):
@@ -23,6 +26,7 @@ class LanguageMasking(tf.keras.layers.Layer):
         return tf.keras.backend.in_train_phase(masked, inputs[0], training=training)
 
 class IndexedSlice(tf.keras.layers.Layer):
+  '''Preprocessing layer, returns single value from inputs[0] by index from inputs[1], useful for MLM'''
     def __init__(self):
         super().__init__()
         def indexed_slice(x):
