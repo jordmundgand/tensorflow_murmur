@@ -17,7 +17,7 @@ def positional_encoding(length, depth):
   return tf.cast(pos_encoding, dtype=tf.float32)
 
 class IdfEmbedding(tf.keras.layers.Layer):
-  '''Like usal Embedding, but applying idf weights to final representation. 
+     '''Like usal Embedding, but applying idf weights to final representation. 
      Parameters:
      input_dim: int, vocabulary dimension;
      output_dim: int, embedding dimension;
@@ -72,10 +72,10 @@ class IdfEmbedding(tf.keras.layers.Layer):
 
 class PositionalEmbedding(tf.keras.layers.Layer):
   '''Classical transformers positional embedding layer. 
-     Parameters:
-     vocab_size: int, vocabulary dimension;
-     d_model: int, embedding dimension;
-     length: int, length of the encoding sequence'''
+  Parameters:
+  vocab_size: int, vocabulary dimension;
+  d_model: int, embedding dimension;
+  length: int, length of the encoding sequence'''
   def __init__(self, vocab_size, d_model, length=2048):
     super().__init__()
     self.d_model = d_model
