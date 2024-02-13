@@ -85,3 +85,82 @@ class MultiText(tf.keras.layers.Layer):
         return self.normalize(out)
     def compute_mask(self, inputs, mask=None):
         return mask
+
+class ColumnTransforner(tf.keras.Model):
+  '''Preprocessing layer, similar to SKLearn ColumnnTransformer.
+  Parameters:
+    transformers: list of preprocessing layers to apply,
+    each item looks like tuple of (
+    'name',
+    transformer: callable (a layer), 
+    iterable (list of layers to apply consequently)
+    or string ('passthrough' - get unprocessed input,
+    'drop' - exclude from the following computation), 
+    input shape: list or tuple, (no batch dimension),
+    dtype: tf.dtypes or string (like in tf));
+
+    aggregator: callable (a layer combining list of tensors) 
+    or string ('concatenate-1' - Concatenate along axis=-1,
+    'concatenate1' - Concatenate along axis=1,
+    'add' - summation,
+    'multiply' - elementwise multiplication,
+    'list' - list of tensors,
+    'dict' - dictionary of tensors by 'name'),
+    how to aggregate processed inputs;
+
+    transformer_weights: iterable, 
+    the weights of combining outputs,
+    valid only for float outputs
+    
+    example:
+    ColumnTransforner(
+      [('first', 
+      [tf.keras.layers.TextVectorization(output_mode='count',vocabulary=['a','b','c']),
+      tf.keras.layers.Dense(8)], 
+      (1), 
+      'string'),
+      ('second', 
+      [tf.keras.layers.IntegerLookup(vocabulary=list(range(10))),
+      tf.keras.layers.Dense(8)], 
+      (10), 
+      'int32')])'''
+  def __init__(self, transformers, aggregator='concatenate-1', transformer_weights=None):
+    
+    
+    self.names_=[i[0] for i in transformers]
+    if transformer_weights!=None:
+      self.weights_=dict(zip(self.names_,transformer_weights))
+    self.input_={i[0]:tf.keras.Input(shape=i[2], dtype=i[3], name=i[0]) for i in transformers}
+    def get_transformer(x):
+      if x[1]=='passthrough':
+        return self.input_[x[0]]
+      elif x[1]=='drop':
+        return None
+      else:
+        if (type(x[1])==tuple)or(type(x[1])==list):
+          y=self.input_[x[0]]
+          for i in x[1]:
+            y=i(y)
+          return y
+        return x[1](self.input_[x[0]])
+
+    self.layers_={i[0]:get_transformer(i) for i in transformers}
+    self.layers_={i:self.layers_[i] for i in self.names_ if self.layers_[i]!=None}
+    if transformer_weights!=None:
+      self.weights_={i:tf.cast(self.weights_[i], dtype=self.layers_[i].dtype) for i in self.layers_.keys()}
+      self.layers_={i:self.weights_[i]*self.layers_[i] for i in self.names_}
+    if callable(aggregator):
+      self.output_=aggregator([self.layers_[i] for i in self.layers_.keys()])
+    elif aggregator=='concatenate-1':
+      self.output_=tf.keras.layers.Concatenate()([self.layers_[i] for i in self.layers_.keys()])
+    elif aggregator=='concatenate1':
+      self.output_=tf.keras.layers.Concatenate(axis=1)([self.layers_[i] for i in self.layers_.keys()])
+    elif aggregator=='add':
+      self.output_=tf.keras.layers.Add()([self.layers_[i] for i in self.layers_.keys()])
+    elif aggregator=='multiply':
+      self.output_=tf.keras.layers.Multiply()([self.layers_[i] for i in self.layers_.keys()])
+    elif aggregator=='list':
+      self.output_=[self.layers_[i] for i in self.layers_.keys()]
+    elif aggregator=='dict':
+      self.output_={i:self.layers_[i] for i in self.layers_.keys()}
+    super().__init__(inputs=self.input_, outputs=self.output_)
