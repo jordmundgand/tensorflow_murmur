@@ -6,7 +6,9 @@ Small TF addons library
 
 # Layers
   LSTMTransformerLayer, EncoderLayer, DecoderLayer
+  
   PositionalEmbedding, IdfEmbedding, SpatialEmbedding
+  
   RandomIndexing, LanguageMasking, IndexedSlice, Splitter, MultiText
 
 # Losses
