@@ -31,6 +31,16 @@ def masked_multi_cosine_similarity(label, pred):
 
     metric = tf.reduce_sum(metric)/tf.reduce_sum(mask)
     return metric
+  
+def target_accuracy(label, pred):
+  '''Accuracy function for full sequenses identity.'''
+  pred = tf.argmax(pred, axis=-1)
+  label = tf.cast(label, pred.dtype)
+  match = label == pred
+
+  match = tf.cast(match, dtype=tf.float32)
+  match = tf.math.reduce_min(match, axis=-1)
+  return tf.reduce_mean(match)
 
 def batch_average(label, pred):
   '''Special `accuracy` function, useful for MLM.'''
