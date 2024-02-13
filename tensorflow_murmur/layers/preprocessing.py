@@ -58,7 +58,8 @@ class Splitter(tf.keras.layers.Layer):
         return tf.not_equal(outputs, '')
 
 class MultiText(tf.keras.layers.Layer):
-    '''Preprocessing layer, convert string tensor into 2D count tensor according to vocabulary.
+    '''Preprocessing layer, convert string tensor into 2D count tensor 
+    according to vocabulary.
     Parameters:
     vocabulary: list of tokens;
     length: int, layer length;
@@ -68,12 +69,12 @@ class MultiText(tf.keras.layers.Layer):
     ngrams: like in TextVectorization;
     output_mode: string, like in TextVectorization;;
     pad_to_max_tokens: boolean, like in TextVectorization.'''
-    def __init__(self, vocabulary, length, max_tokens=None, standardize='lower_and_strip_punctuation', split='whitespace',
+    def __init__(self, vocabulary, length, idf_weights=None, max_tokens=None, standardize='lower_and_strip_punctuation', split='whitespace',
                  ngrams=None, output_mode='count', pad_to_max_tokens=False):
         super().__init__()
         self.tv=tf.keras.layers.TextVectorization(max_tokens=max_tokens, standardize=standardize, 
         split=split, ngrams=ngrams, output_mode=output_mode, pad_to_max_tokens=pad_to_max_tokens, 
-        vocabulary=vocabulary)
+        vocabulary=vocabulary, idf_weights=idf_weights)
         self.concatenate=tf.keras.layers.Concatenate(axis=1)
         self.normalize=tf.keras.layers.Lambda(tf.nn.l2_normalize, arguments={'axis':-1})
         self.length=length
