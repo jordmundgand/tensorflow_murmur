@@ -1,1 +1,1 @@
-from tensorflow_murmur.metrics.metrics import masked_accuracy,masked_multi_loss,batch_average
+from tensorflow_murmur.metrics.metrics import masked_accuracy,masked_multi_cosine_similarity,batch_average
