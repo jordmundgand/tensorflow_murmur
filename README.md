@@ -9,7 +9,7 @@ Small TF addons library
   
   PositionalEmbedding, IdfEmbedding, SpatialEmbedding
   
-  RandomIndexing, LanguageMasking, IndexedSlice, Splitter, MultiText
+  RandomIndexing, LanguageMasking, IndexedSlice, Splitter, MultiText, ColumnTransforner
 
 # Losses
   masked_loss, masked_multi_loss
