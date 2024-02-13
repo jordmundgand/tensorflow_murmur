@@ -94,10 +94,19 @@ class PositionalEmbedding(tf.keras.layers.Layer):
     return x
 
 class SpatialEmbedding(tf.keras.layers.Layer):
-  def __init__(self, d_model,mask_value=0.0):
+  '''Transformers positional embedding layer, 
+  encoding continuous values into embeddings. 
+  Input: 2D float or int tensor(N x M), M in [1: small int],
+  output: 2D float or int tensor (N x d_model).
+  Parameters:
+  d_model: int, embedding dimension;
+  activation: string or callable, inner dense activation;
+  mask_value: float, value to mask.'''
+  
+  def __init__(self, d_model, activation='tanh', mask_value=0.0):
     super().__init__()
     self.d_model = d_model
-    self.embedding = tf.keras.layers.Dense(d_model, activation='tanh')
+    self.embedding = tf.keras.layers.Dense(d_model, activation=activation)
     self.pos_encoding = positional_encoding(length=128, depth=d_model)
     self.mask_value = mask_value
 
