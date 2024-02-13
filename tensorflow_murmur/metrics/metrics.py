@@ -17,7 +17,7 @@ def masked_accuracy(label, pred):
 
 def masked_multi_cosine_similarity(label, pred):
     '''Masked CosineSimilarity metric function
-    with sparse label input.'''
+    with sparse tensor label input.'''
     label=tf.sparse.to_dense(label)
     mask = label == 0.
     mask = ~tf.math.reduce_all(mask,axis=-1)
@@ -32,8 +32,9 @@ def masked_multi_cosine_similarity(label, pred):
     metric = tf.reduce_sum(metric)/tf.reduce_sum(mask)
     return metric
   
-def target_accuracy(label, pred):
-  '''Accuracy function for full sequenses identity.'''
+def sparse_target_accuracy(label, pred):
+  '''Accuracy function for full sequenses identity,
+  sparse labels.'''
   pred = tf.argmax(pred, axis=-1)
   label = tf.cast(label, pred.dtype)
   match = label == pred
