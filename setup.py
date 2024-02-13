@@ -8,10 +8,10 @@ def readme():
 
 setup(
   name='tensorflow-murmur',
-  version='0.0.0',
+  version='0.0.8',
   author='Ivan V. Savkin',
   author_email='i.v.savkin2020@yandex.ru',
-  description='This is small addons module for tensorflow',
+  description='This is a small addons module for tensorflow',
   long_description=readme(),
   long_description_content_type='text/markdown',
   url='https://pypi.org/project/tensorflow-murmur/',
@@ -26,5 +26,5 @@ setup(
   project_urls={
     'GitHub': 'https://github.com/jordmundgand/tensorflow_murmur'
   },
-  python_requires='>=3.6'
+  python_requires='>=3.8'
 )
