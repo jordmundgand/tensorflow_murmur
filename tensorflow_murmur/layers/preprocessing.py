@@ -88,6 +88,8 @@ class MultiText(tf.keras.layers.Layer):
 
 class ColumnTransforner(tf.keras.Model):
   '''Preprocessing layer, similar to SKLearn ColumnnTransformer.
+  Use in model ColumnTransforner().input (as input) and
+  ColumnTransforner().output (as input of next layer).
   Parameters:
     transformers: list of preprocessing layers to apply,
     each item looks like tuple of (
