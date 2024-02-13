@@ -16,8 +16,8 @@ def masked_accuracy(label, pred):
   return tf.reduce_sum(match)/tf.reduce_sum(mask)
 
 def masked_multi_cosine_similarity(label, pred):
-    '''Classical transformers masked SparseCategoricalCrossentropy 
-    loss function.'''
+    '''Masked CosineSimilarity metric function
+    with sparse label input.'''
     label=tf.sparse.to_dense(label)
     mask = label == 0.
     mask = ~tf.math.reduce_all(mask,axis=-1)
