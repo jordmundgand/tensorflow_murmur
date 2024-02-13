@@ -17,11 +17,11 @@ def positional_encoding(length, depth):
   return tf.cast(pos_encoding, dtype=tf.float32)
 
 class IdfEmbedding(tf.keras.layers.Layer):
-     '''Like usal Embedding, but applying idf weights to final representation. 
-     Parameters:
-     input_dim: int, vocabulary dimension;
-     output_dim: int, embedding dimension;
-     idf: iterrable, vector of idf weights.'''
+    '''Like usal Embedding, but applying idf weights to final representation. 
+    Parameters:
+    input_dim: int, vocabulary dimension;
+    output_dim: int, embedding dimension;
+    idf: iterrable, vector of idf weights.'''
     def __init__(
         self,
         input_dim,
