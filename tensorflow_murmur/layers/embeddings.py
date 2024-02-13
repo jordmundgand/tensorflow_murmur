@@ -27,6 +27,7 @@ class IdfEmbedding(tf.keras.layers.Layer):
         input_dim,
         output_dim,
         idf,
+        mask_zero=True,
         embeddings_initializer="uniform",
         embeddings_regularizer=None,
         activity_regularizer=None,
@@ -40,6 +41,7 @@ class IdfEmbedding(tf.keras.layers.Layer):
         self.embeddings_regularizer = tf.keras.regularizers.get(embeddings_regularizer)
         self.activity_regularizer = tf.keras.regularizers.get(activity_regularizer)
         self.embeddings_constraint = tf.keras.constraints.get(embeddings_constraint)
+        self.mask_zero=mask_zero
         super(IdfEmbedding, self).__init__(**kwargs)
     
     def build(self, input_shape=None):
@@ -69,6 +71,11 @@ class IdfEmbedding(tf.keras.layers.Layer):
         return out
     def compute_output_shape(self, input_shape):
         return (input_shape[0], self.output_dim)
+
+    def compute_mask(self, inputs, mask=None):
+        if not self.mask_zero:
+            return None
+        return tf.not_equal(inputs, 0)
 
 class PositionalEmbedding(tf.keras.layers.Layer):
   '''Classical transformers positional embedding layer. 
