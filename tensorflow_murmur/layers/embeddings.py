@@ -93,3 +93,29 @@ class PositionalEmbedding(tf.keras.layers.Layer):
     x = x + self.pos_encoding[tf.newaxis, :length, :]
     return x
 
+class SpatialEmbedding(tf.keras.layers.Layer):
+  def __init__(self, d_model,mask_value=0.0):
+    super().__init__()
+    self.d_model = d_model
+    self.embedding = tf.keras.layers.Dense(d_model, activation='tanh')
+    self.pos_encoding = positional_encoding(length=128, depth=d_model)
+    self.mask_value = mask_value
+
+  def call(self, x):
+    boolean_mask = tf.reduce_any(
+            tf.not_equal(x, self.mask_value), axis=-1, keepdims=True)
+    length = tf.shape(x)[1]
+    x = self.embedding(x)
+
+    # This factor sets the relative scale of the embedding and positonal_encoding.
+    x *= tf.math.sqrt(tf.cast(self.d_model, tf.float32))
+    x = x + self.pos_encoding[tf.newaxis, :length, :]
+    x._keras_mask = tf.squeeze(boolean_mask, axis=-1)
+    return x
+
+  def compute_mask(self, inputs, mask=None):
+        return tf.reduce_any(tf.not_equal(inputs, self.mask_value), axis=-1)
+  
+  def compute_output_shape(self, input_shape):
+        return (input_shape[0], self.d_model)
+  
