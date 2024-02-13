@@ -15,8 +15,8 @@ def masked_loss(label, pred):
   return loss
 
 def masked_multi_loss(label, pred):
-    '''Classical transformers masked SparseCategoricalCrossentropy 
-    loss function.'''
+    '''Classical transformers masked CategoricalCrossentropy 
+    loss function with sparse label input.'''
     label=tf.sparse.to_dense(label)
     mask = label == 0.
     mask = ~tf.math.reduce_all(mask,axis=-1)
