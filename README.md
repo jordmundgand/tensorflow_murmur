@@ -5,14 +5,14 @@
 Small TF addons library
 
 # Layers
-  LSTMTransformerLayer, EncoderLayer, DecoderLayer
+  LSTMTransformerLayer, EncoderLayer, DecoderLayer, Weightened
   
   PositionalEmbedding, IdfEmbedding, SpatialEmbedding
   
   RandomIndexing, LanguageMasking, IndexedSlice, Splitter, MultiText, ColumnTransforner
 
 # Losses
-  masked_loss, masked_multi_loss
+  masked_loss, masked_multi_loss, WeightenedBinaryCrossentropy
 
 # Metrics
   masked_accuracy, masked_multi_cosine_similarity
