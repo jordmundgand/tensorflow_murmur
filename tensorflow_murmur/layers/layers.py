@@ -190,3 +190,30 @@ def random_masked_indexing(x):
   
 def language_masking(x, masked_value=2):
     return tf.vectorized_map(lambda z: tf.tensor_scatter_nd_update(z[0], z[1][tf.newaxis,:], [masked_value]), x)
+
+class Weightened(tf.keras.layers.Layer):
+    '''Adaptive weights layer (trainable TF-IDF) 
+    Parameters:
+    units: tuple, shape of weights tensor (without batch dimension), must be equal to previous layer;
+    initializer: initializer, default - ones;
+    dtype: str or dtype;
+    trainable: bool;'''
+    def __init__(self, units=(1,), initializer=tf.keras.initializers.Ones(), 
+                 dtype='float32', trainable=True):
+        super(Weightened, self).__init__()
+        self.units=units
+        self.initializer=initializer
+        self.dtype_=dtype
+        self.trainable=trainable
+        self.w = tf.Variable(name="weights",
+        initial_value=self.initializer(shape=(1,)+ self.units, dtype=dtype),
+        trainable=trainable)
+
+    def build(self, input_shape):
+        self.w = tf.Variable(name="weights",
+        initial_value=self.initializer(shape=(1,)+ self.units, dtype=self.dtype_),
+        trainable=self.trainable)
+
+    def call(self, inputs):
+        inputs=tf.cast(inputs,dtype=self.dtype_)
+        return inputs*self.w
