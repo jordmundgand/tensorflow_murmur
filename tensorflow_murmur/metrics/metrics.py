@@ -1,4 +1,5 @@
 import tensorflow as tf
+from sklearn.metrics import f1_score
 
 def masked_accuracy(label, pred):
   '''Classical transformers masked SparseCategoricalAccuracy 
