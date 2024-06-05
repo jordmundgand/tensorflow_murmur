@@ -1,1 +1,2 @@
-from tensorflow_murmur.metrics.metrics import masked_accuracy,masked_multi_cosine_similarity,sparse_target_accuracy,batch_average
+from tensorflow_murmur.metrics.metrics import (masked_accuracy,masked_multi_cosine_similarity,
+sparse_target_accuracy,batch_average,f1_macro)
