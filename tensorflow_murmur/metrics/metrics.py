@@ -36,9 +36,10 @@ def sparse_target_accuracy(label, pred):
   '''Accuracy function for full sequenses identity,
   sparse labels.'''
   pred = tf.argmax(pred, axis=-1)
-  label = tf.cast(label, pred.dtype)
-  match = label == pred
-
+  mask = label!=0
+  mask = tf.cast(mask, pred.dtype)
+  label = tf.cast(label, pred.dtype)  
+  match = label==pred*mask
   match = tf.cast(match, dtype=tf.float32)
   match = tf.math.reduce_min(match, axis=-1)
   return tf.reduce_mean(match)
@@ -46,3 +47,11 @@ def sparse_target_accuracy(label, pred):
 def batch_average(label, pred):
   '''Special `accuracy` function, useful for MLM.'''
   return tf.reduce_mean(pred)
+
+def f1_macro_(y_true, y_pred):
+  return f1_score(y_true, y_pred, average='macro')
+def f1_macro(y_true, y_pred):
+  '''F1-macro function for binary labels.'''
+  y_true=tf.cast(y_true, tf.int32)
+  y_pred=tf.cast(y_pred>0.5, tf.int32)
+  return tf.numpy_function(f1_macro_, (y_true, y_pred), Tout=tf.double)
