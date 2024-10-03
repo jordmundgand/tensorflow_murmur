@@ -83,7 +83,7 @@ class PositionalEmbedding(tf.keras.layers.Layer):
   vocab_size: int, vocabulary dimension;
   d_model: int, embedding dimension;
   length: int, length of the encoding sequence'''
-  def __init__(self, vocab_size, d_model, length=2048):
+  def __init__(self, length, vocab_size, d_model):
     super().__init__()
     self.d_model = d_model
     self.embedding = tf.keras.layers.Embedding(vocab_size, d_model, mask_zero=True) 
