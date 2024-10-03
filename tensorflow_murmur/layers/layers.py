@@ -194,25 +194,24 @@ def language_masking(x, masked_value=2):
 class Weightened(tf.keras.layers.Layer):
     '''Adaptive weights layer (trainable TF-IDF) 
     Parameters:
-    units: tuple, shape of weights tensor (without batch dimension), must be equal to previous layer;
+    axis: tuple, lenght>=1 , axes along to be weightened, for flat inputmust be (1,);
     initializer: initializer, default - ones;
     dtype: str or dtype;
     trainable: bool;'''
-    def __init__(self, units=(1,), initializer=tf.keras.initializers.Ones(), 
+    def __init__(self, axis=(1,), initializer=tf.keras.initializers.Ones(), 
                  dtype='float32', trainable=True):
         super(Weightened, self).__init__()
-        self.units=units
+        self.axis=axis
         self.initializer=initializer
         self.dtype_=dtype
         self.trainable=trainable
-        self.w = tf.Variable(name="weights",
-        initial_value=self.initializer(shape=(1,)+ self.units, dtype=dtype),
-        trainable=trainable)
 
     def build(self, input_shape):
-        self.w = tf.Variable(name="weights",
-        initial_value=self.initializer(shape=(1,)+ self.units, dtype=self.dtype_),
-        trainable=self.trainable)
+        self.w = self.add_weight(
+            shape=tf.TensorShape([i[1] if i[0] in self.axis else 1 for i in enumerate(input_shape)]),
+            initializer=self.initializer,
+            trainable=True,
+        )
 
     def call(self, inputs):
         inputs=tf.cast(inputs,dtype=self.dtype_)
