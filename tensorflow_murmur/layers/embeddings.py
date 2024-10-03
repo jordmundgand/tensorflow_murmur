@@ -110,28 +110,36 @@ class SpatialEmbedding(tf.keras.layers.Layer):
   activation: string or callable, inner dense activation;
   mask_value: float, value to mask.'''
   
-  def __init__(self, d_model, activation='tanh', mask_value=0.0):
+  def __init__(self, length, d_model, activation='tanh', mask_value=0.0, dtype=tf.float32):
     super().__init__()
+    self.length = length
     self.d_model = d_model
-    self.embedding = tf.keras.layers.Dense(d_model, activation=activation)
-    self.pos_encoding = positional_encoding(length=128, depth=d_model)
+    self.embedding = tf.keras.layers.Dense(d_model, activation=activation, dtype=dtype)
+    self.pos_encoding = positional_encoding(length=length, depth=d_model)
     self.mask_value = mask_value
+    self.dtype_ = dtype
+    def pe(inputs):
+      inputs *= tf.math.sqrt(tf.cast(self.d_model, tf.float32))
+      return inputs + self.pos_encoding[tf.newaxis, :length, :]
+    self.lambda0=tf.keras.layers.Lambda(pe)
+    def cm0(inputs):
+      return tf.not_equal(tf.cast(inputs, self.dtype_), self.mask_value)
+    self.lambdam0=tf.keras.layers.Lambda(cm0)
+    def cm1(inputs):
+      return tf.reduce_any(tf.cast(tf.ones_like(inputs),tf.bool), axis=-1)
+    self.lambdam1=tf.keras.layers.Lambda(cm1)
 
-  def call(self, x):
-    boolean_mask = tf.reduce_any(
-            tf.not_equal(x, self.mask_value), axis=-1, keepdims=True)
-    length = tf.shape(x)[1]
-    x = self.embedding(x)
+  def call(self, inputs, mask=None):
 
-    # This factor sets the relative scale of the embedding and positonal_encoding.
-    x *= tf.math.sqrt(tf.cast(self.d_model, tf.float32))
-    x = x + self.pos_encoding[tf.newaxis, :length, :]
-    x._keras_mask = tf.squeeze(boolean_mask, axis=-1)
-    return x
+    inputs = self.embedding(inputs)
+    inputs = self.lambda0(inputs)
+    return inputs
 
   def compute_mask(self, inputs, mask=None):
-        return tf.reduce_any(tf.not_equal(inputs, self.mask_value), axis=-1)
+    if mask is not None:
+      return self.lambdam0(mask)
+    else:
+      return self.lambdam1(inputs)
   
   def compute_output_shape(self, input_shape):
-        return (input_shape[0], self.d_model)
-  
+        return (input_shape[1], self.d_model)
