@@ -1,3 +1,5 @@
+import tensorflow as tf
+
 def get_strategy(platform='kaggle', device='TPU'):
     if (platform=='kaggle') and (device=='TPU'):
         tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
